@@ -1,7 +1,7 @@
 /**
  * @file App environment
  * @module app/environment
- * @author Surmon <https://github.com/surmon-china>
+ * @author Name6
  */
 
 export const environment = process.env.NODE_ENV;

@@ -1,3 +1,9 @@
+/**
+ * @file App module
+ * @module app/module
+ * @author Name6
+ */
+
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AuthModule } from './modules/auth/auth.module';

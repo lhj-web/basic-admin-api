@@ -28,7 +28,11 @@ export const databaseProvider = {
     };
 
     function connection() {
-      return mongoose.connect(APP_CONFIG.MONGO_DB.uri);
+      return mongoose.connect(APP_CONFIG.MONGO_DB.uri, {
+        user: APP_CONFIG.MONGO_DB.username as string,
+        pass: APP_CONFIG.MONGO_DB.password as string,
+        authSource: 'admin',
+      });
     }
 
     mongoose.connection.on('connecting', () => {

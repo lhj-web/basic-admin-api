@@ -15,7 +15,7 @@ enum LoggerLevel {
 
 const renderTime = () => {
   const now = new Date();
-  return `[${now.toLocaleDateString()} ${now.toLocaleTimeString()}]`;
+  return `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
 };
 
 const renderModule = (message: string) => {
@@ -31,8 +31,8 @@ const renderMessage = (color: chalk.Chalk, messages: any[]) => {
 const renderLog = (method: LoggerLevel, levelLabel: string, messageColor: chalk.Chalk) => {
   return (message: string, ...args: any) => {
     return console[method](
-      chalk.greenBright('[EDU]'),
-      renderTime,
+      chalk.greenBright('[EDU] - '),
+      renderTime(),
       levelLabel,
       renderModule(message),
       ...renderMessage(messageColor, args),

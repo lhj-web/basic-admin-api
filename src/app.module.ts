@@ -9,9 +9,10 @@ import { AppController } from './app.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './processors/database/database.module';
 import { HelperModule } from './processors/helper/helper.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, HelperModule],
+  imports: [DatabaseModule, AuthModule, HelperModule, UserModule],
   controllers: [AppController],
   providers: [],
 })

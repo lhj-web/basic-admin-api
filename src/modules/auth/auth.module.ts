@@ -11,8 +11,8 @@ import jwt from 'jsonwebtoken';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import * as APP_CONFIG from '@/app.config';
-import { AuthProvider } from './auth.model';
 import { JwtStrategy } from './jwt.strategy';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -23,9 +23,10 @@ import { JwtStrategy } from './jwt.strategy';
         expiresIn: APP_CONFIG.AUTH.expiresIn as number,
       },
     }),
+    UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthProvider, JwtStrategy],
+  providers: [AuthService, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

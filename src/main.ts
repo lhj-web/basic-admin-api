@@ -12,7 +12,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe } from '@/common/pipes/validation.pipe';
 import { HttpExceptionFilter } from '@/common/filters/error.filter';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
-import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
+// import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
 import { ErrorInterceptor } from '@/common/interceptors/error.interceptor';
 import { environment, isProdEnv } from '@/app.environment';
 import logger from '@/utils/logger';
@@ -29,7 +29,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(
     new TransformInterceptor(new Reflector()),
     new ErrorInterceptor(new Reflector()),
-    new LoggingInterceptor(),
+    // new LoggingInterceptor(),
   );
   return await app.listen(APP_CONFIG.APP.PORT);
 }

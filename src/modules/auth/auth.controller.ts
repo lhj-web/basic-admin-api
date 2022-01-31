@@ -1,9 +1,10 @@
-import { Body, Controller, Post, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Post, HttpStatus, UseGuards, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Auth, AuthUserInfoPayload } from './auth.model';
+import { AuthUserInfoPayload } from './auth.model';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
 import { TokenResult } from './auth.interface';
-// import { QueryParams } from '@/decorators/query-params.decorator';
+import { JwtAuthGuard } from '@/common/guards/auth.guard';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,15 @@ export class AuthController {
   async login(@Body() body: AuthUserInfoPayload): Promise<TokenResult> {
     const { username, password } = body;
     const token = await this.authService.adminLogin(username, password);
+    return token;
+  }
+
+  @Get('refreshToken')
+  @UseGuards(JwtAuthGuard)
+  @HttpProcessor.handle({ message: 'Refresh token' })
+  async refreshToken(@Req() req: Request): Promise<any> {
+    const { id, username } = req.user as { id: number; username: string };
+    const token = this.authService.createToken(id, username);
     return token;
   }
 }

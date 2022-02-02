@@ -14,8 +14,8 @@ export class AuthController {
   @HttpProcessor.handle({ message: 'Login', error: HttpStatus.BAD_REQUEST })
   async login(@Body() body: AuthUserInfoPayload): Promise<TokenResult> {
     const { username, password } = body;
-    const token = await this.authService.adminLogin(username, password);
-    return token;
+    const res = await this.authService.adminLogin(username, password);
+    return res;
   }
 
   @Get('refreshToken')

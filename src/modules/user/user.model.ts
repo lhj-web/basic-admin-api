@@ -4,7 +4,7 @@
  * @author Name6
  */
 
-import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { prop, modelOptions, plugin } from '@typegoose/typegoose';
 import { getProviderByTypegooseClass } from '@/common/transformers/model.transformer';
 import { AutoIncrementID } from '@typegoose/auto-increment';
@@ -16,7 +16,7 @@ import { generalAutoIncrementIDConfig } from '@/constants/increment.constant';
     versionKey: false,
     timestamps: {
       createdAt: 'create_at',
-      updatedAt: 'updatedAt',
+      updatedAt: 'update_at',
     },
   },
 })
@@ -49,6 +49,11 @@ export class User {
 
   @prop({ default: Date.now })
   update_at?: Date;
+
+  @IsDefined()
+  @IsBoolean()
+  @prop({ default: true })
+  status: boolean;
 }
 
 export class UserInfo {

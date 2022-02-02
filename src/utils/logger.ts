@@ -30,6 +30,15 @@ const renderMessage = (color: chalk.Chalk, messages: any[]) => {
 
 const renderLog = (method: LoggerLevel, levelLabel: string, messageColor: chalk.Chalk) => {
   return (message: string, ...args: any) => {
+    // FIXME: 当method为‘debug’时报错console[method] is not a function
+    if (method === 'dubug')
+      return console.debug(
+        chalk.greenBright('[EDU] - '),
+        renderTime(),
+        levelLabel,
+        renderModule(message),
+        ...renderMessage(messageColor, args),
+      );
     return console[method](
       chalk.greenBright('[EDU] - '),
       renderTime(),
@@ -50,5 +59,4 @@ const createLogger = () => {
 };
 
 const logger = createLogger();
-
 export default logger;

@@ -55,13 +55,18 @@ export class AuthService {
   //   return this.getAdminInfo();
   // }
 
-  public async adminLogin(username: string, password: string): Promise<TokenResult> {
-    const user = await this.userService.findOne(username);
+  public async adminLogin(
+    username: string,
+    password: string,
+  ): Promise<TokenResult & { user_id: number }> {
+    const user = await this.userService.findOne({ username });
     if (user === null) throw 'User is not exist';
     const existedPassword = user.password;
     const loginPassword = decodeMD5(password);
 
-    if (loginPassword === existedPassword) return this.createToken(user.id, user.username);
-    else throw 'Password incorrect';
+    if (loginPassword === existedPassword) {
+      const token = this.createToken(user.id, user.username);
+      return { ...token, user_id: user.id };
+    } else throw 'Password incorrect';
   }
 }

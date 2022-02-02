@@ -24,10 +24,10 @@ export class LoggingInterceptor implements NestInterceptor {
     }
     const request = context.switchToHttp().getRequest();
     const content = request.method + ' -> ' + request.url;
-    logger.debug('+++ req：', content);
+    logger.debug('+++ req: ', content);
     const now = Date.now();
     return call$.pipe(
-      tap(() => logger.debug('--- res：', content, `${Date.now() - now}ms`)),
+      tap(() => logger.debug('--- res: ', content, `${Date.now() - now}ms`)),
     );
   }
 }

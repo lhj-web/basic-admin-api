@@ -7,12 +7,18 @@ import { MongooseModel } from '@/interfaces/mongoose.interface';
 export class UserService {
   constructor(@InjectModel(User) private readonly userModel: MongooseModel<User>) {}
 
-  async findOne(username: string) {
-    const user = await this.userModel.findOne({ username }).exec();
+  async findOne(info: { username?: string; id?: number }): Promise<User> {
+    const user = await this.userModel.findOne(info);
+    if (!user) throw 'The user is not exist';
     return user;
   }
 
   async createOne(user: User) {
     this.userModel.create(user);
+  }
+
+  async getUserList(): Promise<User[]> {
+    const users = await this.userModel.find();
+    return users;
   }
 }

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Header, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
+import { omit } from 'lodash';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
 import { QueryParams } from '@/common/decorators/query-params.decorator';
 import { JwtAuthGuard } from '@/common/guards/auth.guard';
@@ -13,8 +14,10 @@ export class UserController {
   @Get('getInfo')
   @UseGuards(JwtAuthGuard)
   @HttpProcessor.handle('Get user Info')
-  getUserById(@Req() request: Request) {
-    console.log(request.headers.authorization);
+  async getUserInfo(@Req() req: Request) {
+    const { id } = req.user as { id: number };
+    const { username, avatar, desc } = await this.userService.findOne({ id });
+    return { userId: id, userName: username, portrait: avatar, desc };
   }
 
   @Post('addUser')
@@ -22,5 +25,16 @@ export class UserController {
   @HttpProcessor.handle('Add user')
   addUser(@Body() body: User) {
     this.userService.createOne(body);
+  }
+
+  @Get('getAll')
+  @UseGuards(JwtAuthGuard)
+  @HttpProcessor.handle('Get user list')
+  async getUserList() {
+    const users = await this.userService.getUserList();
+    return users.map((item) => {
+      const { id, username, desc, avatar, create_at, update_at, status } = item;
+      return { id, username, desc, avatar, create_at, update_at, status };
+    });
   }
 }

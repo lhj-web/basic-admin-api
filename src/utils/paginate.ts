@@ -4,20 +4,13 @@
  * @author Name6
  */
 
-import { QueryOptions, Model, FilterQuery, Document } from 'mongoose';
-
-// const DEFAULT_OPTIONS = Object.freeze({
-//   page: 1,
-//   perPage: 16,
-//   offset: 0,
-//   lean: false,
-// });
+import { Model, Document, Schema, FilterQuery, QueryOptions } from 'mongoose';
 
 export interface PaginateResult<T> {
-  documents: Array<T>;
+  items: Array<T>;
   total: number;
   page: number;
-  perPage: number;
+  pageSize: number;
   totalPage: number;
   offset?: number;
 }
@@ -25,7 +18,7 @@ export interface PaginateResult<T> {
 export interface PaginateOptions {
   /** paginate options */
   page: number;
-  perPage: number;
+  pageSize: number;
   offset: number;
   select: string | object;
   /** mongoose queryOptions */
@@ -36,9 +29,55 @@ export interface PaginateOptions {
   queryOptions: QueryOptions;
 }
 
+const DEFAULT_OPTIONS = Object.freeze({
+  page: 1,
+  pageSize: 10,
+  offset: 0,
+  lean: false,
+});
+
 export interface PaginateModel<T extends Document> extends Model<T> {
   paginate(
     query?: FilterQuery<T>,
     options?: Partial<PaginateOptions>,
   ): Promise<PaginateResult<T>>;
+}
+
+export function mongoosePaginate(schema: Schema) {
+  schema.statics.paginate = paginate;
+}
+
+export function paginate<T>(
+  this: Model<T>,
+  filterQuery: FilterQuery<T> = {},
+  options: Partial<PaginateOptions> = {},
+) {
+  const { page, pageSize, offset, select, queryOptions, ...resetOptions } = {
+    ...DEFAULT_OPTIONS,
+    ...options,
+  };
+
+  const skip = offset > 0 ? offset : (page - 1) * pageSize;
+
+  const countQuery = this.countDocuments
+    ? this.countDocuments(filterQuery).exec()
+    : this.count(filterQuery).exec();
+  const pageQuery = this.find(filterQuery, select, {
+    skip,
+    limit: pageSize,
+    ...resetOptions,
+    ...queryOptions,
+  }).exec();
+
+  return Promise.all([countQuery, pageQuery]).then(([countResult, pageResult]) => {
+    const result: PaginateResult<T> = {
+      items: pageResult,
+      total: countResult,
+      page,
+      pageSize,
+      totalPage: Math.ceil(countResult / pageSize) || 1,
+    };
+
+    return result;
+  });
 }

@@ -29,12 +29,12 @@ export function transformDataToPaginate<T>(
   request?: any,
 ): HttpPaginateResult<T[]> {
   return {
-    data: data.documents,
+    data: data.items,
     params: request?.queryParams || null,
     pagination: {
       total: data.total,
       current_page: data.page,
-      per_page: data.perPage,
+      per_page: data.pageSize,
       total_page: data.totalPage,
     },
   };

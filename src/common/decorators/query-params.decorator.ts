@@ -11,28 +11,20 @@ import {
   VALIDATION_ERROR_DEFAULT,
   HTTP_PARAMS_PERMISSION_ERROR_DEFAULT,
 } from '@/constants/text.constant';
-import {
-  // PublishState,
-  PublicState,
-  OriginState,
-  SortType,
-} from '@/interfaces/biz.interface';
 import { HttpForbiddenError } from '@/errors/forbidden.error';
 import { HttpBadRequestError } from '@/errors/bad-request.error';
 import { PaginateOptions } from '@/utils/paginate';
+import { Request } from 'express';
 
 // 预置转换器可选字段
 export enum QueryParamsField {
   Page = 'page',
-  PerPage = 'per_page',
+  PageSize = 'pageSize',
   Sort = 'sort',
-  Date = 'date',
-  Keyword = 'keyword',
+  Date = '_t',
   State = 'state',
-  Public = 'public',
   Origin = 'origin',
   ParamsId = 'paramsId',
-  CommentState = 'commentState',
 }
 
 // 内部参数类型
@@ -68,6 +60,7 @@ export interface QueryParamsResult {
   visitor: QueryVisitor;
   cookies: cookies;
   isAuthenticated: boolean; // 是否鉴权
+  user: { id: number; username: string; role: number };
 }
 
 // 入参转换配置
@@ -95,17 +88,17 @@ interface ValidateError {
  */
 export const QueryParams = createParamDecorator(
   (customConfig: TransformConfig[], context: ExecutionContext): QueryParamsResult => {
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request & QueryParamsConfig>();
 
     // from passport middleware
     // https://github.com/jaredhanson/passport/blob/master/CHANGELOG.md
     // http://www.passportjs.org/docs/configure/
     const isAuthenticated = request.isAuthenticated();
 
-    // 字段转换配置（字符串则代表启用，对象则代表默认值）
+    // 字段转换配置
     const transformConfig: Partial<QueryParamsConfig> = {
       [QueryParamsField.Page]: 1,
-      [QueryParamsField.PerPage]: true,
+      [QueryParamsField.PageSize]: 10,
       [QueryParamsField.ParamsId]: 'id',
       [QueryParamsField.Sort]: true,
     };
@@ -121,7 +114,6 @@ export const QueryParams = createParamDecorator(
         }
       });
     }
-
     // 查询参数
     const querys: Partial<QueryParamsConfig> = {};
 
@@ -129,18 +121,14 @@ export const QueryParams = createParamDecorator(
     const options: Partial<QueryParamsConfig> = {};
 
     // 路径参数
-    const params: QueryParamsConfig = lodash.merge({ url: request.url }, request.params);
+    const params: any = lodash.merge({ url: request.url }, request.params);
 
     // 初始参数
-    const date = request.query.date;
+    const date = request.query._t;
     const paramsId = request.params[transformConfig.paramsId as string];
-    const [page, per_page, sort, state, ppublic, origin] = [
+    const [page, pageSize] = [
       request.query.page || transformConfig.page,
-      request.query.per_page,
-      request.query.sort,
-      request.query.state,
-      request.query.public,
-      request.query.origin,
+      request.query.pageSize || transformConfig.pageSize,
     ].map((item) => (item != null ? Number(item) : item));
 
     // 参数提取验证规则
@@ -160,25 +148,12 @@ export const QueryParams = createParamDecorator(
               // ObjectId
               isValidObjectId(paramsId)
                 ? new Types.ObjectId(paramsId)
-                : isNaN(paramsId)
+                : isNaN(paramsId as unknown as number)
                 ? // slug
                   String(paramsId)
                 : // number ID
                   Number(paramsId);
           }
-        },
-      },
-      {
-        name: 'query.sort',
-        field: QueryParamsField.Sort,
-        isAllowed:
-          lodash.isUndefined(sort) ||
-          [SortType.Asc, SortType.Desc, SortType.Hot].includes(sort),
-        isIllegal: false,
-        setValue() {
-          options.sort = {
-            _id: sort != null ? sort : SortType.Desc,
-          };
         },
       },
       {
@@ -194,15 +169,15 @@ export const QueryParams = createParamDecorator(
         },
       },
       {
-        name: 'query.per_page',
-        field: QueryParamsField.PerPage,
+        name: 'query.pageSize',
+        field: QueryParamsField.PageSize,
         isAllowed:
-          lodash.isUndefined(per_page) ||
-          (lodash.isInteger(per_page) && Number(per_page) > 0 && Number(per_page) <= 50),
+          lodash.isUndefined(pageSize) ||
+          (lodash.isInteger(pageSize) && Number(pageSize) > 0 && Number(pageSize) <= 50),
         isIllegal: false,
         setValue() {
-          if (per_page != null) {
-            options.perPage = per_page;
+          if (pageSize != null) {
+            options.PageSize = pageSize;
           }
         },
       },
@@ -210,84 +185,13 @@ export const QueryParams = createParamDecorator(
         name: 'query.date',
         field: QueryParamsField.Date,
         isAllowed:
-          lodash.isUndefined(date) || new Date(date).toString() !== 'Invalid Date',
+          lodash.isUndefined(date) ||
+          new Date(Number(date) as any).toString() !== 'Invalid Date',
         isIllegal: false,
         setValue() {
-          if (date != null) {
-            const queryDate = new Date(date);
-            querys.create_at = {
-              $gte: new Date(((queryDate as any) / 1000 - 60 * 60 * 8) * 1000),
-              $lt: new Date(((queryDate as any) / 1000 + 60 * 60 * 16) * 1000),
-            };
-          }
-        },
-      },
-      // {
-      //   // comment or article BIZ
-      //   name: 'query.state',
-      //   field: QueryParamsField.State,
-      //   isAllowed:
-      //     lodash.isUndefined(state) ||
-      //     (transformConfig[QueryParamsField.CommentState]
-      //       ? [
-      //           CommentState.Auditing,
-      //           CommentState.Deleted,
-      //           CommentState.Published,
-      //           CommentState.Spam,
-      //         ].includes(state)
-      //       : [PublishState.Published, PublishState.Draft, PublishState.Recycle].includes(
-      //           state,
-      //         )),
-      //   isIllegal:
-      //     !isAuthenticated &&
-      //     state != null &&
-      //     state !==
-      //       (transformConfig[QueryParamsField.CommentState]
-      //         ? CommentState.Published
-      //         : PublishState.Published),
-      //   setValue() {
-      //     // admin/any || user/Published
-      //     if (state != null) {
-      //       querys.state = state;
-      //       return false;
-      //     }
-      //     // user
-      //     if (!isAuthenticated) {
-      //       querys.state = transformConfig[QueryParamsField.CommentState]
-      //         ? CommentState.Published
-      //         : PublishState.Published;
-      //     }
-      //   },
-      // },
-      {
-        name: 'query.public',
-        field: QueryParamsField.Public,
-        isAllowed:
-          lodash.isUndefined(ppublic) ||
-          [PublicState.Public, PublicState.Password, PublicState.Secret].includes(ppublic),
-        isIllegal: ppublic != null && !isAuthenticated && ppublic !== PublicState.Public,
-        setValue() {
-          // admin/any || user/Public
-          if (ppublic != null) {
-            querys.public = ppublic;
-            return false;
-          }
-          // user
-          if (!isAuthenticated) {
-            querys.public = PublicState.Public;
-          }
-        },
-      },
-      {
-        name: 'query.origin',
-        field: QueryParamsField.Origin,
-        isAllowed:
-          lodash.isUndefined(origin) ||
-          [OriginState.Original, OriginState.Hybrid, OriginState.Reprint].includes(origin),
-        isIllegal: false,
-        setValue() {
-          if (origin != null) {
-            querys.origin = origin;
+          if (date !== null) {
+            const queryDate = new Date(Number(date) as any).toString();
+            querys.create_at = queryDate;
           }
         },
       },
@@ -338,7 +242,6 @@ export const QueryParams = createParamDecorator(
     const ip =
       request.headers['x-forwarded-for'] ||
       request.headers['x-real-ip'] ||
-      request.connection.remoteAddress ||
       request.socket.remoteAddress ||
       request.ip ||
       request.ips[0];
@@ -349,11 +252,12 @@ export const QueryParams = createParamDecorator(
       options,
       params,
       request,
+      user: request.user as { id: number; username: string; role: number },
       origin: request.query,
       cookies: request.cookies,
       visitor: {
-        ip: ip.replace('::ffff:', '').replace('::1', ''),
-        ua: request.headers['user-agent'],
+        ip: (ip as string).replace('::ffff:', '').replace('::1', ''),
+        ua: request.headers['user-agent'] as string,
         referer: request.referer,
       },
     };

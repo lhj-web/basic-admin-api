@@ -30,7 +30,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const request = host.switchToHttp().getRequest();
     const response = host.switchToHttp().getResponse();
-    const status = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = exception.getStatus?.() || HttpStatus.INTERNAL_SERVER_ERROR;
     const errorOption: ExceptionOption = exception.getResponse() as ExceptionOption;
     const isString = (value): value is ResponseMessage => lodash.isString(value);
     const errorInfo = isString(errorOption) ? null : errorOption.error;

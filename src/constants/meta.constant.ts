@@ -19,3 +19,6 @@ export const HTTP_RES_TRANSFORM_PAGINATE = '__customHttpResTransformPagenate__';
 
 export const HTTP_CACHE_KEY_METADATA = CACHE_KEY_METADATA;
 export const HTTP_CACHE_TTL_METADATA = '__customHttpCacheTTL__';
+
+export const AUTHORIZE_KEY_METADATA = 'admin:authorize';
+export const PERMISSION_OPTIONAL_KEY_METADATA = 'admin:permission_optional';

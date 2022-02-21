@@ -1,16 +1,20 @@
-import { Body, Controller, Post, HttpStatus, UseGuards, Get, Req } from '@nestjs/common';
+import { Body, Controller, Post, HttpStatus, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthUserInfoPayload } from './auth.model';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
 import { TokenResult } from './auth.interface';
-import { JwtAuthGuard } from '@/common/guards/auth.guard';
 import { Request } from 'express';
+import { Authorize } from '@/common/decorators/authorize.decorator';
+import { PermissionOptional } from '@/common/decorators/permission-optional.decorator';
+import { RequestUser } from '@/interfaces/req-user.interface';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @Authorize()
+  @PermissionOptional()
   @HttpProcessor.handle({ message: 'Login', error: HttpStatus.BAD_REQUEST })
   async login(@Body() body: AuthUserInfoPayload): Promise<TokenResult> {
     const { username, password } = body;
@@ -19,11 +23,11 @@ export class AuthController {
   }
 
   @Get('refreshToken')
-  @UseGuards(JwtAuthGuard)
+  @PermissionOptional()
   @HttpProcessor.handle({ message: 'Refresh token' })
   async refreshToken(@Req() req: Request): Promise<any> {
-    const { id, username } = req.user as { id: number; username: string };
-    const token = this.authService.createToken(id, username);
+    const { id, username, role } = req.user as RequestUser;
+    const token = this.authService.createToken(id, username, role);
     return token;
   }
 }

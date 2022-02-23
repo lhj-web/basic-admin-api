@@ -1,0 +1,44 @@
+name: deploy
+
+on:
+  release:
+    types: [created]
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+        env:
+          CI: true
+          NODE_ENV: production
+
+      - name: Release branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.ACTION_TOKEN }}
+          publish_branch: release
+          publish_dir: ./dist
+
+      - name: Exec deploy script with SSH
+        uses: appleboy/ssh-action@master
+        with:
+          command_timeout: 10m
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.KEY }}
+          script: sh ${{ secrets.WWW_PATH }}/edu-cms-api/scripts/deploy.sh

@@ -28,6 +28,6 @@ rm -rf .git
 cd ..
 
 echo "[deploy] restarting..."
-pm2 restart nodepress
+pm2 restart edu-cms-api
 
 echo "[deploy] finished."

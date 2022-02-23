@@ -39,5 +39,5 @@ jobs:
           command_timeout: 10m
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
-          password: ${{ secrets.KEY }}
+          key: ${{ secrets.KEY }}
           script: sh ${{ secrets.WWW_PATH }}/edu-cms-api/scripts/deploy.sh

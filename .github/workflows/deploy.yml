@@ -18,10 +18,10 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        run: yarn
+        run: npm install
 
       - name: Build
-        run: yarn build
+        run: npm run build
         env:
           CI: true
           NODE_ENV: production

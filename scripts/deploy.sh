@@ -1,12 +1,12 @@
 #!/bin/bash
 
 WEB_PATH=$(dirname $0)
-echo "$(WEB_PATH)"
 cd $WEB_PATH
 cd ..
 
+echo "[deploy] start proxy"
+proxy
 echo "[deploy] start deployment..."
-
 echo "[deploy] fetching..."
 echo "[deploy] path:" $(pwd)
 echo "[deploy] pulling source code..."
@@ -29,5 +29,8 @@ cd ..
 
 echo "[deploy] restarting..."
 pm2 restart edu-cms-api
+
+echo "[deploy] close proxy"
+unproxy
 
 echo "[deploy] finished."

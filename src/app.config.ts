@@ -31,7 +31,7 @@ export const CROSS_DOMAIN = {
 };
 
 export const MONGO_DB = {
-  uri: `mongodb://127.0.0.1:${argv.dbport || '27017'}/edu_cms`,
+  uri: `mongodb://${argv.dbhost || '127.0.0.1'}:${argv.dbport || '27017'}/edu_cms`,
   username: argv.db_username || '',
   password: argv.db_password || '',
 };

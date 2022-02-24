@@ -17,15 +17,12 @@ echo "[deploy] stop service..."
 pm2 stop edu-cms-api
 
 echo "[deploy] pnpm install..."
-pnpm install --frozen-lockfile --production
+pnpm i
 
-echo "[deploy] fetching release code..."
-rm -rf dist
-mkdir dist
-cd dist
-git clone -b release git@github.com:lhj-web/edu-cms-api.git .
-rm -rf .git
-cd ..
+echo "[deploy] build..."
+pnpm prebuild
+
+pnpm build
 
 echo "[deploy] restarting..."
 pm2 restart edu-cms-api

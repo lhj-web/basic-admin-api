@@ -26,7 +26,7 @@ exports.CROSS_DOMAIN = {
     allowedReferer: '',
 };
 exports.MONGO_DB = {
-    uri: `mongodb://127.0.0.1:${yargs_1.argv.dbport || '27017'}/edu_cms`,
+    uri: `mongodb://${yargs_1.argv.dbhost || '127.0.0.1'}:${yargs_1.argv.dbport || '27017'}/edu_cms`,
     username: yargs_1.argv.db_username || '',
     password: yargs_1.argv.db_password || '',
 };

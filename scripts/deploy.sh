@@ -22,13 +22,14 @@ pm2 stop edu-cms-api
 echo "[deploy] pnpm install..."
 pnpm i
 
+echo "[deploy] stash pop..."
+git stash pop
+
 echo "[deploy] build..."
 pnpm prebuild
 
 pnpm build
 
-echo "[deploy] stash pop..."
-git stash pop
 echo "[deploy] restarting..."
 pm2 restart edu-cms-api
 

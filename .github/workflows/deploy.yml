@@ -40,4 +40,4 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
-          script: ./${{ secrets.WWW_PATH }}/edu-cms-api/scripts/deploy.sh
+          script: sh ${{ secrets.WWW_PATH }}/edu-cms-api/scripts/deploy.sh

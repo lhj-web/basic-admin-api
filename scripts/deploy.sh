@@ -5,7 +5,8 @@ cd $WEB_PATH
 cd ..
 
 echo "[deploy] start proxy"
-proxy
+export http_proxy=http://127.0.0.1:7890
+export https_proxy=http://127.0.0.1:7890
 echo "[deploy] start deployment..."
 echo "[deploy] fetching..."
 echo "[deploy] path:" $(pwd)
@@ -26,8 +27,5 @@ pnpm build
 
 echo "[deploy] restarting..."
 pm2 restart edu-cms-api
-
-echo "[deploy] close proxy"
-unproxy
 
 echo "[deploy] finished."

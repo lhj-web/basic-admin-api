@@ -40,7 +40,7 @@ exports.AUTH = {
     expiresIn: yargs_1.argv.auth_expires_in || 3600,
     refreshExpiresIn: yargs_1.argv.auth_refresh_expires_in || 3600 * 24 * 5,
     jwtTokenSecret: yargs_1.argv.auth_key || 'edu_cms',
-    defaultPassword: yargs_1.argv.auth_default_password || 'password',
+    defaultPassword: yargs_1.argv.auth_default_password || '123456',
 };
 exports.EMAIL = {
     account: yargs_1.argv.email_account || '1871731528@qq.com',

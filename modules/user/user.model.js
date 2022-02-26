@@ -17,6 +17,7 @@ const auto_increment_1 = require("@typegoose/auto-increment");
 const increment_constant_1 = require("../../constants/increment.constant");
 const codec_transformer_1 = require("../../common/transformers/codec.transformer");
 const paginate_1 = require("../../utils/paginate");
+const app_config_1 = require("../../app.config");
 let User = class User {
 };
 __decorate([
@@ -58,7 +59,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, typegoose_1.prop)({ default: (0, codec_transformer_1.decodeMD5)('123456') }),
+    (0, typegoose_1.prop)({ default: (0, codec_transformer_1.decodeMD5)(app_config_1.AUTH.defaultPassword) }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([

@@ -17,6 +17,7 @@ const http_decorator_1 = require("../../common/decorators/http.decorator");
 const permission_optional_decorator_1 = require("../../common/decorators/permission-optional.decorator");
 const query_params_decorator_1 = require("../../common/decorators/query-params.decorator");
 const req_user_decorator_1 = require("../../common/decorators/req-user.decorator");
+const forbidden_error_1 = require("../../errors/forbidden.error");
 const common_1 = require("@nestjs/common");
 const role_model_1 = require("./role.model");
 const role_service_1 = require("./role.service");
@@ -41,6 +42,8 @@ let RoleController = class RoleController {
         return true;
     }
     update(body, req) {
+        if (body.id === 1)
+            throw new forbidden_error_1.HttpForbiddenError('该角色不能被修改');
         const user_id = req.user.id;
         this.roleService.updateOne(Object.assign(Object.assign({}, body), { user_id }));
         return true;
@@ -54,6 +57,8 @@ let RoleController = class RoleController {
         return perms;
     }
     delete(body) {
+        if (body.id === 1)
+            throw new forbidden_error_1.HttpForbiddenError('不能删除该角色');
         this.roleService.deleteOne(body.id);
         return true;
     }
@@ -116,7 +121,7 @@ __decorate([
 ], RoleController.prototype, "getPerms", null);
 __decorate([
     (0, common_1.Delete)('delete'),
-    http_decorator_1.HttpProcessor.handle('Delete role'),
+    http_decorator_1.HttpProcessor.handle({ message: 'Delete role', error: common_1.HttpStatus.BAD_REQUEST }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

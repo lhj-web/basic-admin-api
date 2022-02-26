@@ -23,7 +23,6 @@ let MenuController = class MenuController {
         this.menuService = menuService;
     }
     add(body) {
-        this.menuService.addOne(body);
         return true;
     }
     async list(query) {
@@ -38,11 +37,9 @@ let MenuController = class MenuController {
         return await this.menuService.getAllMenu(info);
     }
     update(menu) {
-        this.menuService.updateOne(menu);
         return true;
     }
     delete({ id }) {
-        this.menuService.deleteOne(id);
         return true;
     }
 };

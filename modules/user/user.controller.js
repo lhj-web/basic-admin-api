@@ -19,6 +19,7 @@ const user_service_1 = require("./user.service");
 const user_model_1 = require("./user.model");
 const permission_optional_decorator_1 = require("../../common/decorators/permission-optional.decorator");
 const query_params_decorator_1 = require("../../common/decorators/query-params.decorator");
+const forbidden_error_1 = require("../../errors/forbidden.error");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -36,6 +37,8 @@ let UserController = class UserController {
         return true;
     }
     async update(body) {
+        if (body.id === 1)
+            throw new forbidden_error_1.HttpForbiddenError('不能修改管理员信息');
         await this.userService.updateOne(body.id, Object.assign({}, body));
         return true;
     }
@@ -50,6 +53,8 @@ let UserController = class UserController {
         return users;
     }
     async forbidUser({ id }) {
+        if (id === 1)
+            throw new forbidden_error_1.HttpForbiddenError('不能禁用系统管理员');
         const user = await this.userService.findOne({ id });
         if (user.status === true) {
             this.userService.updateOne(id, { status: false });
@@ -97,7 +102,7 @@ __decorate([
 ], UserController.prototype, "add", null);
 __decorate([
     (0, common_1.Put)('update'),
-    http_decorator_1.HttpProcessor.handle('Update user'),
+    http_decorator_1.HttpProcessor.handle({ message: 'Update user', error: common_1.HttpStatus.BAD_REQUEST }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_model_1.User]),

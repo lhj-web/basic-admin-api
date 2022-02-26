@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { User } from './user.model';
 import { PermissionOptional } from '@/common/decorators/permission-optional.decorator';
 import { QueryParams } from '@/common/decorators/query-params.decorator';
+import { HttpForbiddenError } from '@/errors/forbidden.error';
 
 @Controller('user')
 export class UserController {
@@ -34,8 +35,9 @@ export class UserController {
   }
 
   @Put('update')
-  @HttpProcessor.handle('Update user')
+  @HttpProcessor.handle({ message: 'Update user', error: HttpStatus.BAD_REQUEST })
   async update(@Body() body: User) {
+    if (body.id === 1) throw new HttpForbiddenError('不能修改管理员信息');
     await this.userService.updateOne(body.id, { ...body });
     return true;
   }
@@ -59,8 +61,8 @@ export class UserController {
     error: HttpStatus.BAD_REQUEST,
   })
   async forbidUser(@Body() { id }) {
+    if (id === 1) throw new HttpForbiddenError('不能禁用系统管理员');
     const user = await this.userService.findOne({ id });
-
     if (user.status === true) {
       this.userService.updateOne(id, { status: false });
     } else throw 'The user has been disabled';

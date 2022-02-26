@@ -25,7 +25,7 @@ export class MenuController {
     error: HttpStatus.BAD_REQUEST,
   })
   add(@Body() body: MenuInfo) {
-    this.menuService.addOne(body);
+    // this.menuService.addOne(body);
     return true;
   }
 
@@ -44,14 +44,14 @@ export class MenuController {
   @Put('update')
   @HttpProcessor.handle({ message: 'Update menu', error: HttpStatus.BAD_REQUEST })
   update(@Body() menu: MenuInfo) {
-    this.menuService.updateOne(menu);
+    // this.menuService.updateOne(menu);
     return true;
   }
 
   @Delete('delete')
   @HttpProcessor.handle({ message: 'Delete menu', error: HttpStatus.BAD_REQUEST })
   delete(@Body() { id }) {
-    this.menuService.deleteOne(id);
+    // this.menuService.deleteOne(id);
     return true;
   }
 }

@@ -2,6 +2,7 @@ import { HttpProcessor } from '@/common/decorators/http.decorator';
 import { PermissionOptional } from '@/common/decorators/permission-optional.decorator';
 import { QueryParams } from '@/common/decorators/query-params.decorator';
 import { ReqUser } from '@/common/decorators/req-user.decorator';
+import { HttpForbiddenError } from '@/errors/forbidden.error';
 import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Req } from '@nestjs/common';
 import { RoleInfo } from './role.model';
 import { RoleService } from './role.service';
@@ -43,6 +44,7 @@ export class RoleController {
   @Put('update')
   @HttpProcessor.handle({ message: 'Update role', error: HttpStatus.BAD_REQUEST })
   update(@Body() body: RoleInfo, @Req() req) {
+    if (body.id === 1) throw new HttpForbiddenError('该角色不能被修改');
     const user_id = req.user.id as number;
     this.roleService.updateOne({ ...body, user_id });
     return true;
@@ -64,8 +66,9 @@ export class RoleController {
   }
 
   @Delete('delete')
-  @HttpProcessor.handle('Delete role')
+  @HttpProcessor.handle({ message: 'Delete role', error: HttpStatus.BAD_REQUEST })
   delete(@Body() body) {
+    if (body.id === 1) throw new HttpForbiddenError('不能删除该角色');
     this.roleService.deleteOne(body.id);
     return true;
   }

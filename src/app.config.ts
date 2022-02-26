@@ -47,7 +47,7 @@ export const AUTH = {
   expiresIn: argv.auth_expires_in || 3600,
   refreshExpiresIn: argv.auth_refresh_expires_in || 3600 * 24 * 5,
   jwtTokenSecret: argv.auth_key || 'edu_cms',
-  defaultPassword: argv.auth_default_password || 'password',
+  defaultPassword: argv.auth_default_password || '123456',
 };
 
 export const EMAIL = {

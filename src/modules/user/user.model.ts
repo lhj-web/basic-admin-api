@@ -18,6 +18,7 @@ import { AutoIncrementID } from '@typegoose/auto-increment';
 import { generalAutoIncrementIDConfig } from '@/constants/increment.constant';
 import { decodeMD5 } from '@/common/transformers/codec.transformer';
 import { mongoosePaginate } from '@/utils/paginate';
+import { AUTH } from '@/app.config';
 
 @plugin(mongoosePaginate)
 @plugin(AutoIncrementID, generalAutoIncrementIDConfig)
@@ -64,7 +65,7 @@ export class User {
 
   @IsOptional()
   @IsString()
-  @prop({ default: decodeMD5('123456') })
+  @prop({ default: decodeMD5(AUTH.defaultPassword as string) })
   password: string;
 
   @prop({ default: Date.now, immutable: true })

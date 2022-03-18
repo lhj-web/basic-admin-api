@@ -8,6 +8,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './processors/database/database.module';
+import { CacheModule } from './processors/cache/cache.module';
 import { HelperModule } from './processors/helper/helper.module';
 import { UserModule } from './modules/user/user.module';
 import { MenuModule } from './modules/menu/menu.module';
@@ -20,6 +21,7 @@ import { PermsGuard } from './common/guards/perms.guard';
 @Module({
   imports: [
     DatabaseModule,
+    CacheModule,
     AuthModule,
     HelperModule,
     UserModule,

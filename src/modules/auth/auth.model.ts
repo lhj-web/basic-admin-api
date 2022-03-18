@@ -4,7 +4,7 @@
  * @author Name6
  */
 
-import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class AuthUserInfoPayload {
   @IsDefined()
@@ -16,4 +16,24 @@ export class AuthUserInfoPayload {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @IsDefined()
+  @IsNotEmpty()
+  @IsString()
+  captchaId: string;
+
+  @IsDefined()
+  @IsNotEmpty()
+  @IsString()
+  verifyCode: string;
+}
+
+export class ImageCaptchaPayload {
+  @IsOptional()
+  @IsNumber()
+  readonly width = 100;
+
+  @IsOptional()
+  @IsNumber()
+  readonly height = 50;
 }

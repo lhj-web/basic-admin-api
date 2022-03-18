@@ -1,6 +1,6 @@
-import { Body, Controller, Post, HttpStatus, Get, Req } from '@nestjs/common';
+import { Body, Controller, Post, HttpStatus, Get, Req, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthUserInfoPayload } from './auth.model';
+import { AuthUserInfoPayload, ImageCaptchaPayload } from './auth.model';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
 import { TokenResult } from './auth.interface';
 import { Request } from 'express';
@@ -17,7 +17,8 @@ export class AuthController {
   @PermissionOptional()
   @HttpProcessor.handle({ message: 'Login', error: HttpStatus.BAD_REQUEST })
   async login(@Body() body: AuthUserInfoPayload): Promise<TokenResult> {
-    const { username, password } = body;
+    const { username, password, captchaId, verifyCode } = body;
+    await this.authService.checkCaptcha(captchaId, verifyCode);
     const res = await this.authService.adminLogin(username, password);
     return res;
   }
@@ -29,5 +30,17 @@ export class AuthController {
     const { id, username, role } = req.user as RequestUser;
     const token = this.authService.createToken(id, username, role);
     return token;
+  }
+
+  @Get('captcha/img')
+  @Authorize()
+  @PermissionOptional()
+  @HttpProcessor.handle({
+    message: 'Captcha',
+    error: HttpStatus.BAD_REQUEST,
+    success: HttpStatus.CREATED,
+  })
+  async captcha(@Query() size: ImageCaptchaPayload) {
+    return await this.authService.getCaptcha(size);
   }
 }

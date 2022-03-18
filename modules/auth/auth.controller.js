@@ -24,7 +24,8 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     async login(body) {
-        const { username, password } = body;
+        const { username, password, captchaId, verifyCode } = body;
+        await this.authService.checkCaptcha(captchaId, verifyCode);
         const res = await this.authService.adminLogin(username, password);
         return res;
     }
@@ -32,6 +33,9 @@ let AuthController = class AuthController {
         const { id, username, role } = req.user;
         const token = this.authService.createToken(id, username, role);
         return token;
+    }
+    async captcha(size) {
+        return await this.authService.getCaptcha(size);
     }
 };
 __decorate([
@@ -53,6 +57,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refreshToken", null);
+__decorate([
+    (0, common_1.Get)('captcha/img'),
+    (0, authorize_decorator_1.Authorize)(),
+    (0, permission_optional_decorator_1.PermissionOptional)(),
+    http_decorator_1.HttpProcessor.handle({
+        message: 'Captcha',
+        error: common_1.HttpStatus.BAD_REQUEST,
+        success: common_1.HttpStatus.CREATED,
+    }),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_model_1.ImageCaptchaPayload]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "captcha", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

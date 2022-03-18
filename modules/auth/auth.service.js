@@ -32,12 +32,17 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const codec_transformer_1 = require("../../common/transformers/codec.transformer");
+const nanoid_1 = require("nanoid");
+const svgCaptcha = __importStar(require("svg-captcha"));
 const APP_CONFIG = __importStar(require("../../app.config"));
 const user_service_1 = require("../user/user.service");
+const cache_service_1 = require("../../processors/cache/cache.service");
+const lodash_1 = require("lodash");
 let AuthService = class AuthService {
-    constructor(jwtService, userService) {
+    constructor(jwtService, userService, cacheService) {
         this.jwtService = jwtService;
         this.userService = userService;
+        this.cacheService = cacheService;
     }
     createToken(id, username, role) {
         return {
@@ -63,11 +68,35 @@ let AuthService = class AuthService {
         else
             throw 'Password incorrect';
     }
+    async getCaptcha(size) {
+        const svg = svgCaptcha.create({
+            size: 4,
+            color: true,
+            noise: 4,
+            width: (0, lodash_1.isEmpty)(size.width) ? 100 : size.width,
+            height: (0, lodash_1.isEmpty)(size.height) ? 50 : size.height,
+            charPreset: '1234567890',
+        });
+        const ret = {
+            img: `data:image/svg+xml;base64,${Buffer.from(svg.data).toString('base64')}`,
+            id: (0, nanoid_1.nanoid)(),
+        };
+        await this.cacheService.set(`admin:captcha:img:${ret.id}`, svg.text, { ttl: 5 * 60 });
+        return ret;
+    }
+    async checkCaptcha(id, code) {
+        const ret = await this.cacheService.get(`admin:captcha:img:${id}`);
+        if ((0, lodash_1.isEmpty)(ret) || code.toLowerCase() !== ret.toLowerCase()) {
+            throw '验证码错误';
+        }
+        await this.cacheService.delete(`admin:captcha:img:${id}`);
+    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_1.JwtService,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        cache_service_1.CacheService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

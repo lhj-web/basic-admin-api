@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthUserInfoPayload = void 0;
+exports.ImageCaptchaPayload = exports.AuthUserInfoPayload = void 0;
 const class_validator_1 = require("class-validator");
 class AuthUserInfoPayload {
 }
@@ -25,5 +25,34 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], AuthUserInfoPayload.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.IsDefined)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AuthUserInfoPayload.prototype, "captchaId", void 0);
+__decorate([
+    (0, class_validator_1.IsDefined)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AuthUserInfoPayload.prototype, "verifyCode", void 0);
 exports.AuthUserInfoPayload = AuthUserInfoPayload;
+class ImageCaptchaPayload {
+    constructor() {
+        this.width = 100;
+        this.height = 50;
+    }
+}
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Object)
+], ImageCaptchaPayload.prototype, "width", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Object)
+], ImageCaptchaPayload.prototype, "height", void 0);
+exports.ImageCaptchaPayload = ImageCaptchaPayload;
 //# sourceMappingURL=auth.model.js.map

@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const auth_module_1 = require("./modules/auth/auth.module");
 const database_module_1 = require("./processors/database/database.module");
+const cache_module_1 = require("./processors/cache/cache.module");
 const helper_module_1 = require("./processors/helper/helper.module");
 const user_module_1 = require("./modules/user/user.module");
 const menu_module_1 = require("./modules/menu/menu.module");
@@ -25,6 +26,7 @@ AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             database_module_1.DatabaseModule,
+            cache_module_1.CacheModule,
             auth_module_1.AuthModule,
             helper_module_1.HelperModule,
             user_module_1.UserModule,

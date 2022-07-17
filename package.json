@@ -1,13 +1,23 @@
 {
   "name": "edu-cms-backend",
   "version": "0.1.0",
+  "private": false,
   "description": "The educational CMS system developed by Nest, Mongo and Redis.",
   "author": "Name6",
-  "private": false,
   "license": "MIT",
+  "homepage": "https://github.com/lhj-web/edu-cms-api",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lhj-web/edu-cms-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lhj-web/edu-cms-api/issues"
+  },
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "build": "cross-env NODE_ENV=production nest build",
     "start": "cross-env NODE_ENV=development nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
@@ -19,18 +29,9 @@
     "test:debug": "cross-env NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
     "lint:lint-staged": "lint-staged",
-    "lint:prettier": "prettier --write  \"src/**/*.{js,json,tsx,css,less,scss,vue,html,md}\"",
-    "lint:eslint": "eslint --cache --max-warnings 0   \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint:eslint": "eslint --cache --max-warnings 0   \"{src,apps,test}/**/*.ts\" --fix",
     "log": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepare": "husky install"
-  },
-  "homepage": "https://github.com/lhj-web/edu-cms-api",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lhj-web/edu-cms-api.git"
-  },
-  "bugs": {
-    "url": "https://github.com/lhj-web/edu-cms-api/issues"
   },
   "dependencies": {
     "@nestjs/common": "^8.2.6",
@@ -97,22 +98,15 @@
     "typescript": "4.5.2",
     "webpack": "^5.66.0"
   },
-  "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
-  },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "{!(package)*.json,*.code-snippets,.!(browserslist)*rc}": [
-      "prettier --write--parser json"
+    "*.{ts}": [
+      "eslint --fix"
     ],
     "package.json": [
-      "prettier --write"
+      "eslint --fix"
     ],
     "*.md": [
-      "prettier --write"
+      "eslint --fix"
     ]
   },
   "jest": {

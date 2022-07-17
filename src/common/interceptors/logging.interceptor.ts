@@ -7,10 +7,10 @@
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import {
-  Injectable,
-  NestInterceptor,
   CallHandler,
   ExecutionContext,
+  Injectable,
+  NestInterceptor,
 } from '@nestjs/common';
 import { isDevEnv } from '@/app.environment';
 import logger from '@/utils/logger';
@@ -19,11 +19,11 @@ import logger from '@/utils/logger';
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
     const call$ = next.handle();
-    if (!isDevEnv) {
+    if (!isDevEnv)
       return call$;
-    }
+
     const request = context.switchToHttp().getRequest();
-    const content = request.method + ' -> ' + request.url;
+    const content = `${request.method} -> ${request.url}`;
     logger.debug('+++ req: ', content);
     const now = Date.now();
     return call$.pipe(

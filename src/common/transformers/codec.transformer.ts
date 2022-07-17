@@ -5,8 +5,8 @@
  * @author Name6
  */
 
-import { Base64 } from 'js-base64';
 import { createHash } from 'crypto';
+import { Base64 } from 'js-base64';
 
 // Base64
 export function decodeBase64(value: string): string {

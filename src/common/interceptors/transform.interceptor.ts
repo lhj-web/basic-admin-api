@@ -8,17 +8,17 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
 import {
-  Injectable,
-  NestInterceptor,
   CallHandler,
   ExecutionContext,
+  Injectable,
+  NestInterceptor,
 } from '@nestjs/common';
 import {
-  HttpResponseSuccess,
   HttpPaginateResult,
+  HttpResponseSuccess,
+  ResponseMessage,
   ResponseStatus,
 } from '@/interfaces/http.interface';
-import { ResponseMessage } from '@/interfaces/http.interface';
 import { PaginateResult } from '@/utils/paginate';
 import * as META from '@/constants/meta.constant';
 import * as TEXT from '@/constants/text.constant';
@@ -46,8 +46,7 @@ export function transformDataToPaginate<T>(
  */
 @Injectable()
 export class TransformInterceptor<T>
-  implements NestInterceptor<T, HttpResponseSuccess<T>>
-{
+implements NestInterceptor<T, HttpResponseSuccess<T>> {
   constructor(private readonly reflector: Reflector) {}
 
   intercept(

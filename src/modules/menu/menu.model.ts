@@ -13,9 +13,9 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { prop, modelOptions, plugin } from '@typegoose/typegoose';
-import { getProviderByTypegooseClass } from '@/common/transformers/model.transformer';
+import { modelOptions, plugin, prop } from '@typegoose/typegoose';
 import { AutoIncrementID } from '@typegoose/auto-increment';
+import { getProviderByTypegooseClass } from '@/common/transformers/model.transformer';
 import { generalAutoIncrementIDConfig } from '@/constants/increment.constant';
 import { MenuType } from './menu.enum';
 
@@ -31,112 +31,112 @@ import { MenuType } from './menu.enum';
 })
 export class Menu {
   @prop({ unique: true })
-  id: number;
+    id: number;
 
   @IsDefined()
   @IsInt()
   @prop({ default: null })
-  parent_id: number;
+    parent_id: number;
 
   @IsNotEmpty()
   @IsString()
   @prop({ required: true })
-  name: string;
+    name: string;
 
   @IsOptional()
   @IsString()
   @prop()
-  route?: string;
+    route?: string;
 
   @IsOptional()
   @IsString()
   @prop()
-  component?: string;
+    component?: string;
 
   @IsOptional()
   @IsString()
   @prop()
-  perms?: string;
+    perms?: string;
 
   @IsDefined()
   @IsIn([MenuType.directory, MenuType.menu, MenuType.button])
   @IsInt({ message: 'The type field should be a number: 0, 1 or 2' })
   @prop({ enum: MenuType, default: MenuType.directory, index: true })
-  type: MenuType;
+    type: MenuType;
 
   @IsOptional()
   @IsString()
   @prop()
-  icon?: string;
+    icon?: string;
 
   @IsDefined()
   @IsInt()
   @prop({ default: 0 })
-  order_num: number;
+    order_num: number;
 
   @IsDefined()
   @IsBoolean()
   @prop({ default: false })
-  keepalive: boolean;
+    keepalive: boolean;
 
   @prop({ default: Date.now, immutable: true })
-  create_at?: Date;
+    create_at?: Date;
 
   @prop({ default: Date.now })
-  update_at?: Date;
+    update_at?: Date;
 
   @IsOptional()
   @IsBoolean()
   @prop({ default: true })
-  status: boolean;
+    status: boolean;
 }
 
 export class MenuInfo {
   @IsOptional()
   @IsInt()
-  id?: number;
+    id?: number;
 
   @IsOptional()
   @IsInt()
-  parent_id?: number;
+    parent_id?: number;
 
   @IsOptional()
   @IsBoolean()
-  status?: boolean;
+    status?: boolean;
 
   @IsDefined()
   @IsNotEmpty()
   @IsString()
-  name: string;
+    name: string;
 
   @IsOptional()
   @IsBoolean()
-  keepalive?: boolean;
+    keepalive?: boolean;
 
   @IsDefined()
   @IsNotEmpty()
   @IsInt()
-  type: number;
+    type: number;
 
   @IsOptional()
   @IsString()
-  component?: string;
+    component?: string;
 
   @IsOptional()
   @IsString()
-  icon?: string;
+    icon?: string;
 
   @IsOptional()
   @IsString()
-  route?: string;
+    route?: string;
 
   @IsOptional()
   @IsString()
-  perms?: string;
+    perms?: string;
 
   @IsOptional()
   @IsBoolean()
-  is_ext?: boolean;
+    is_ext?: boolean;
 }
 
 export const MenuProvider = getProviderByTypegooseClass(Menu);

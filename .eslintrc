@@ -1,0 +1,6 @@
+{
+  "extends": "@name6",
+  "rules": {
+    "@typescript-eslint/consistent-type-imports": "off"
+  }
+}

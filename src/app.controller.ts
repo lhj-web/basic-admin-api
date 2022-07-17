@@ -1,7 +1,7 @@
 /**
  * @file App controller
  * @module app/controller
- * @author Surmon <https://github.com/surmon-china>
+ * @author Name6
  */
 
 import { Controller, Get } from '@nestjs/common';

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
+import { MenuModule } from '../menu/menu.module';
 import { RoleService } from './role.service';
 import { RoleController } from './role.controller';
 import { RoleProvider } from './role.model';
-import { MenuModule } from '../menu/menu.module';
 
 @Module({
   imports: [MenuModule],

@@ -6,17 +6,17 @@
 
 import lodash from 'lodash';
 import {
-  ExceptionFilter,
-  Catch,
-  HttpException,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import {
-  ResponseStatus,
-  HttpResponseError,
   ExceptionOption,
+  HttpResponseError,
   ResponseMessage,
+  ResponseStatus,
 } from '@/interfaces/http.interface';
 import { UNDEFINED } from '@/constants/value.constant';
 import { isDevEnv } from '@/app.environment';
@@ -46,7 +46,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     // default 404
     if (status === HttpStatus.NOT_FOUND) {
-      data.error = data.error || `Not found`;
+      data.error = data.error || 'Not found';
       data.message = data.message || `Invalid API: ${request.method} > ${request.url}`;
     }
 

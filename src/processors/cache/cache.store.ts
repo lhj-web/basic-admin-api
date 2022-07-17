@@ -6,9 +6,9 @@
 
 import { createClient } from 'redis';
 import {
+  CacheModuleOptions,
   CacheStoreFactory,
   CacheStoreSetOptions,
-  CacheModuleOptions,
 } from '@nestjs/common';
 
 export type RedisStoreOptions = Parameters<typeof createClient>[0];
@@ -31,7 +31,8 @@ const createRedisStore = (options: CacheStoreOptions) => {
       const _ttl = typeof ttl === 'function' ? ttl(value) : ttl;
       // https://redis.io/commands/setex
       await client.setEx(key, _ttl, _value);
-    } else {
+    }
+    else {
       await client.set(key, _value);
     }
   };

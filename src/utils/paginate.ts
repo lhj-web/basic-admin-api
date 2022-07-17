@@ -4,7 +4,7 @@
  * @author Name6
  */
 
-import { Model, Document, Schema, FilterQuery, QueryOptions } from 'mongoose';
+import type { Document, FilterQuery, Model, QueryOptions, Schema } from 'mongoose';
 
 export interface PaginateResult<T> {
   items: Array<T>;
@@ -59,9 +59,9 @@ export function paginate<T>(
 
   const skip = offset > 0 ? offset : (page - 1) * pageSize;
 
-  const countQuery = this.countDocuments
-    ? this.countDocuments(filterQuery).exec()
-    : this.count(filterQuery).exec();
+  const countQuery = this.countDocuments ?
+    this.countDocuments(filterQuery).exec() :
+    this.count(filterQuery).exec();
   const pageQuery = this.find(filterQuery, select, {
     skip,
     limit: pageSize,

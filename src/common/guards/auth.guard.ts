@@ -6,9 +6,9 @@
 
 import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { HttpUnauthorizedError } from '@/errors/unauthorized.error';
 import { UNDEFINED } from '@/constants/value.constant';
-import { Reflector } from '@nestjs/core';
 import { AUTHORIZE_KEY_METADATA } from '@/constants/meta.constant';
 
 /**
@@ -21,6 +21,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(private readonly reflector: Reflector) {
     super();
   }
+
   canActivate(context: ExecutionContext) {
     // 如果加入@Authorize则跳过校验
     const authorize = this.reflector.get<boolean>(
@@ -28,7 +29,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
     );
 
-    if (authorize) return true;
+    if (authorize)
+      return true;
     return super.canActivate(context);
   }
 
@@ -37,10 +39,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
    * @description 如果解析出的数据对不上，则判定为无效，并进行权限验证
    */
   handleRequest(error, authInfo, errInfo) {
-    if (authInfo && !error && !errInfo) {
+    if (authInfo && !error && !errInfo)
       return authInfo;
-    } else {
+    else
       throw error || new HttpUnauthorizedError(UNDEFINED, errInfo?.message);
-    }
   }
 }

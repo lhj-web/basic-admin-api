@@ -36,16 +36,17 @@ export class EmailService {
   }
 
   private verifyClient(): void {
-    return this.transporter.verify((error) => {
+    return this.transporter.verify(error => {
       if (error) {
         this.clientIsValid = false;
         setTimeout(this.verifyClient.bind(this), 1000 * 60 * 30);
         logger.error(
-          `[NodeMailer]`,
-          `client init failed! retry when after 30 mins`,
+          '[NodeMailer]',
+          'client init failed! retry when after 30 mins',
           getMessageFromNormalError(error),
         );
-      } else {
+      }
+      else {
         this.clientIsValid = true;
         logger.info('[NodeMailer]', 'client init succeed!');
       }
@@ -64,11 +65,12 @@ export class EmailService {
     this.transporter.sendMail(options, (error, info) => {
       if (error) {
         logger.error(
-          `[NodeMailer]`,
-          `send failed! reason:`,
+          '[NodeMailer]',
+          'send failed! reason:',
           getMessageFromNormalError(error),
         );
-      } else {
+      }
+      else {
         logger.info('[NodeMailer]', 'send succeed!', info.messageId, info.response);
       }
     });

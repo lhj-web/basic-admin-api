@@ -21,7 +21,7 @@ export const databaseProvider = {
     const sendAlarmMail = (error: string) => {
       emailService.sendMailAs(APP_CONFIG.APP.NAME, {
         to: APP_CONFIG.APP.ADMIN_EMAIL,
-        subject: `MongoDB Error!`,
+        subject: 'MongoDB Error!',
         text: error,
         html: `<pre><code>${error}</code></pre>`,
       });
@@ -55,7 +55,7 @@ export const databaseProvider = {
       reconnectionTask = setTimeout(connection, RECONNECT_INTERVAL);
     });
 
-    mongoose.connection.on('error', (error) => {
+    mongoose.connection.on('error', error => {
       logger.error('[MongoDB]', 'error!', error);
       mongoose.disconnect();
       sendAlarmMail(String(error));

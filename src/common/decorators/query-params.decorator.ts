@@ -6,15 +6,15 @@
 
 import lodash from 'lodash';
 import { Types, isValidObjectId } from 'mongoose';
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, createParamDecorator } from '@nestjs/common';
+import { Request } from 'express';
 import {
-  VALIDATION_ERROR_DEFAULT,
   HTTP_PARAMS_PERMISSION_ERROR_DEFAULT,
+  VALIDATION_ERROR_DEFAULT,
 } from '@/constants/text.constant';
 import { HttpForbiddenError } from '@/errors/forbidden.error';
 import { HttpBadRequestError } from '@/errors/bad-request.error';
 import { PaginateOptions } from '@/utils/paginate';
-import { Request } from 'express';
 
 // 预置转换器可选字段
 export enum QueryParamsField {
@@ -30,15 +30,15 @@ export enum QueryParamsField {
 // 内部参数类型
 export interface QueryParamsConfig extends Omit<PaginateOptions, 'populate' | 'select'> {
   [key: string]:
-    | void
-    | string
-    | number
-    | boolean
-    | Types.ObjectId
-    | Date
-    | RegExp
-    | QueryParamsConfig
-    | any;
+  | void
+  | string
+  | number
+  | boolean
+  | Types.ObjectId
+  | Date
+  | RegExp
+  | QueryParamsConfig
+  | any;
 }
 
 export interface QueryVisitor {
@@ -105,13 +105,12 @@ export const QueryParams = createParamDecorator(
 
     // 合并配置
     if (customConfig) {
-      customConfig.forEach((field) => {
-        if (lodash.isString(field)) {
+      customConfig.forEach(field => {
+        if (lodash.isString(field))
           transformConfig[field] = true;
-        }
-        if (lodash.isObject(field)) {
+
+        if (lodash.isObject(field))
           Object.assign(transformConfig, field);
-        }
       });
     }
     // 查询参数
@@ -129,7 +128,7 @@ export const QueryParams = createParamDecorator(
     const [page, pageSize] = [
       request.query.page || transformConfig.page,
       request.query.pageSize || transformConfig.pageSize,
-    ].map((item) => (item != null ? Number(item) : item));
+    ].map(item => (item != null ? Number(item) : item));
 
     // 参数提取验证规则
     // 1. field 用于校验这个字段是否被允许用做参数
@@ -146,12 +145,10 @@ export const QueryParams = createParamDecorator(
           if (paramsId != null) {
             params[transformConfig.paramsId as string] =
               // ObjectId
-              isValidObjectId(paramsId)
-                ? new Types.ObjectId(paramsId)
-                : isNaN(paramsId as unknown as number)
-                ? // slug
-                  String(paramsId)
-                : // number ID
+              isValidObjectId(paramsId) ?
+                new Types.ObjectId(paramsId) :
+                isNaN(paramsId as unknown as number) ? // slug
+                  String(paramsId) : // number ID
                   Number(paramsId);
           }
         },
@@ -163,9 +160,8 @@ export const QueryParams = createParamDecorator(
           lodash.isUndefined(page) || (lodash.isInteger(page) && Number(page) > 0),
         isIllegal: false,
         setValue() {
-          if (page != null) {
+          if (page != null)
             options.page = page;
-          }
         },
       },
       {
@@ -176,9 +172,8 @@ export const QueryParams = createParamDecorator(
           (lodash.isInteger(pageSize) && Number(pageSize) > 0 && Number(pageSize) <= 50),
         isIllegal: false,
         setValue() {
-          if (pageSize != null) {
+          if (pageSize != null)
             options.PageSize = pageSize;
-          }
         },
       },
       {
@@ -198,16 +193,16 @@ export const QueryParams = createParamDecorator(
     ];
 
     // 验证字段是否被允许
-    const isEnabledField = (field) => field != null && field !== false;
+    const isEnabledField = field => field != null && field !== false;
 
     // 验证参数及生成参数
-    validates.forEach((validate) => {
-      if (!isEnabledField(transformConfig[validate.field])) {
+    validates.forEach(validate => {
+      if (!isEnabledField(transformConfig[validate.field]))
         return false;
-      }
-      if (!validate.isAllowed) {
+
+      if (!validate.isAllowed)
         throw new HttpBadRequestError(`${VALIDATION_ERROR_DEFAULT}: ${validate.name}`);
-      }
+
       if (validate.isIllegal) {
         throw new HttpForbiddenError(
           `${HTTP_PARAMS_PERMISSION_ERROR_DEFAULT}: ${validate.name}`,
@@ -224,15 +219,16 @@ export const QueryParams = createParamDecorator(
      */
 
     // 已处理字段
-    const isProcessedFields = validates.map((validate) => validate.field);
+    const isProcessedFields = validates.map(validate => validate.field);
     // 配置允许的字段
     const allAllowFields = Object.keys(transformConfig);
     // 剩余的待处理字段 = 配置允许的字段 - 已处理字段
     const todoFields = lodash.difference(allAllowFields, isProcessedFields);
     // 将所有待处理字段循环，将值循环至 querys
-    todoFields.forEach((field) => {
+    todoFields.forEach(field => {
       const targetValue = request.query[field];
-      if (targetValue != null) querys[field] = targetValue;
+      if (targetValue != null)
+        querys[field] = targetValue;
     });
 
     // 挂载到 request 上下文

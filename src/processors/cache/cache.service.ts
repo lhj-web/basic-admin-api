@@ -4,11 +4,11 @@
  * @author Name6
  */
 
+import type { Cache } from 'cache-manager';
 import schedule from 'node-schedule';
-import { Cache } from 'cache-manager';
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { RedisCacheStore } from './cache.store';
 import logger from '@/utils/logger';
+import { RedisCacheStore } from './cache.store';
 
 export type CacheKey = string;
 export type CacheResult<T> = Promise<T>;
@@ -88,25 +88,25 @@ export class CacheService {
       this.isReadied = false;
       logger.error('[Redis]', 'Client End!');
     });
-    this.cacheStore.client.on('error', (error) => {
+    this.cacheStore.client.on('error', error => {
       this.isReadied = false;
-      logger.error('[Redis]', `Client Error!`, error.message);
+      logger.error('[Redis]', 'Client Error!', error.message);
     });
     // connect
     this.cacheStore.client.connect();
   }
 
   public get<T>(key: CacheKey): CacheResult<T> {
-    if (!this.isReadied) {
-      return Promise.reject('Redis has not ready!');
-    }
+    if (!this.isReadied)
+      return Promise.reject(new Error('Redis has not ready!'));
+
     return this.cacheStore.get(key);
   }
 
   public delete(key: CacheKey): CacheResult<void> {
-    if (!this.isReadied) {
-      return Promise.reject('Redis has not ready!');
-    }
+    if (!this.isReadied)
+      return Promise.reject(new Error('Redis has not ready!'));
+
     return this.cacheStore.del(key);
   }
 
@@ -118,9 +118,9 @@ export class CacheService {
       ttl: number;
     },
   ): CacheResult<void> {
-    if (!this.isReadied) {
-      return Promise.reject('Redis has not ready!');
-    }
+    if (!this.isReadied)
+      return Promise.reject(new Error('Redis has not ready!'));
+
     return this.cacheStore.set(key, value, options);
   }
 
@@ -182,7 +182,7 @@ export class CacheService {
           .then(() => {
             setTimeout(doPromise, timeout.success);
           })
-          .catch((error) => {
+          .catch(error => {
             const time = timeout.error || timeout.success;
             setTimeout(doPromise, time);
             logger.warn('[Redis]', `超时任务执行失败，${time / 1000}s 后重试`, error);
@@ -195,8 +195,8 @@ export class CacheService {
     if (timing) {
       const doPromise = () => {
         promiseTask()
-          .then((data) => data)
-          .catch((error) => {
+          .then(data => data)
+          .catch(error => {
             logger.warn(
               '[Redis]',
               `定时任务执行失败，${timing.error / 1000}s 后重试`,

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@/common/transformers/model.transformer';
-import { User } from './user.model';
 import { MongooseModel } from '@/interfaces/mongoose.interface';
 import { PaginateOptions, PaginateResult } from '@/utils/paginate';
+import { User } from './user.model';
 
 @Injectable()
 export class UserService {
@@ -10,7 +10,8 @@ export class UserService {
 
   async findOne(info: { username?: string; id?: number }): Promise<User> {
     const user = await this.userModel.findOne(info).exec();
-    if (!user) throw 'The user is not exist';
+    if (!user)
+      throw new Error('The user is not exist');
     return user;
   }
 
@@ -29,7 +30,8 @@ export class UserService {
 
   async isUserExist(username: string) {
     const user = await this.userModel.findOne({ username }).exec();
-    if (user) return user.id;
+    if (user)
+      return user.id;
     return false;
   }
 }

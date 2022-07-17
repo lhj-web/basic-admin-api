@@ -8,10 +8,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { MenuService } from './menu.service';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
-import { MenuInfo } from './menu.model';
 import { PermissionOptional } from '@/common/decorators/permission-optional.decorator';
+import { MenuService } from './menu.service';
+import { MenuInfo } from './menu.model';
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 @Controller('menu')
 export class MenuController {
@@ -34,10 +36,13 @@ export class MenuController {
   @HttpProcessor.handle('Get menu list')
   async list(@Query() query) {
     const { name, status } = query;
-    const info = {};
-    if (name) info['name'] = name;
-    if (status === '0') info['status'] = false;
-    else if (status === '1') info['status'] = true;
+    const info: { [key: string]: any } = {};
+    if (name)
+      info.name = name;
+    if (status === '0')
+      info.status = false;
+    else if (status === '1')
+      info.status = true;
     return await this.menuService.getAllMenu(info);
   }
 

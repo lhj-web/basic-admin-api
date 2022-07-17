@@ -8,8 +8,8 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import * as APP_CONFIG from '@/app.config';
-import { AuthService } from './auth.service';
 import { HttpUnauthorizedError } from '@/errors/unauthorized.error';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -22,7 +22,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   validate(payload: any) {
     const data = this.authService.validateAuthData(payload);
-    if (data) return data;
+    if (data)
+      return data;
     else throw new HttpUnauthorizedError();
   }
 }

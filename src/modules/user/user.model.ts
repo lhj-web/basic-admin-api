@@ -12,9 +12,9 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { prop, modelOptions, plugin } from '@typegoose/typegoose';
-import { getProviderByTypegooseClass } from '@/common/transformers/model.transformer';
+import { modelOptions, plugin, prop } from '@typegoose/typegoose';
 import { AutoIncrementID } from '@typegoose/auto-increment';
+import { getProviderByTypegooseClass } from '@/common/transformers/model.transformer';
 import { generalAutoIncrementIDConfig } from '@/constants/increment.constant';
 import { decodeMD5 } from '@/common/transformers/codec.transformer';
 import { mongoosePaginate } from '@/utils/paginate';
@@ -33,27 +33,27 @@ import { AUTH } from '@/app.config';
 })
 export class User {
   @prop({ unique: true })
-  id: number;
+    id: number;
 
   @IsDefined()
-  @IsString({ message: `what's your name?` })
+  @IsString({ message: 'what\'s your name?' })
   @prop({ required: true })
-  username: string;
+    username: string;
 
   @IsDefined()
   @IsInt()
   @prop({ required: true })
-  role: number;
+    role: number;
 
   @IsOptional()
   @IsString()
   @prop({ default: '' })
-  nickname?: string;
+    nickname?: string;
 
   @IsOptional()
   @IsString({ message: 'desc' })
   @prop({ default: '' })
-  desc?: string;
+    desc?: string;
 
   @IsOptional()
   @IsString()
@@ -61,35 +61,35 @@ export class User {
     default:
       'https://my-picture-bed-1304169582.cos.ap-nanjing.myqcloud.com/picture/user.jpg',
   })
-  avatar?: string;
+    avatar?: string;
 
   @IsOptional()
   @IsString()
   @prop({ default: decodeMD5(AUTH.defaultPassword as string) })
-  password: string;
+    password: string;
 
   @prop({ default: Date.now, immutable: true })
-  create_at?: Date;
+    create_at?: Date;
 
   @prop({ default: Date.now })
-  update_at?: Date;
+    update_at?: Date;
 
   @IsOptional()
   @IsBoolean()
   @prop({ default: true })
-  status: boolean;
+    status: boolean;
 }
 
 export class UserInfo {
   @IsDefined()
   @IsNotEmpty({ message: 'hi' })
   @IsString()
-  username: string;
+    username: string;
 
   @IsDefined()
   @IsNotEmpty({ message: 'hello' })
   @IsString()
-  password: string;
+    password: string;
 
   avatar?: string;
 

@@ -1,12 +1,12 @@
-import { Body, Controller, Post, HttpStatus, Get, Req, Query } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthUserInfoPayload, ImageCaptchaPayload } from './auth.model';
+import type { Request } from 'express';
+import type { RequestUser } from '@/interfaces/req-user.interface';
+import { Body, Controller, Get, HttpStatus, Post, Query, Req } from '@nestjs/common';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
-import { TokenResult } from './auth.interface';
-import { Request } from 'express';
 import { Authorize } from '@/common/decorators/authorize.decorator';
 import { PermissionOptional } from '@/common/decorators/permission-optional.decorator';
-import { RequestUser } from '@/interfaces/req-user.interface';
+import { TokenResult } from './auth.interface';
+import { AuthUserInfoPayload, ImageCaptchaPayload } from './auth.model';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {

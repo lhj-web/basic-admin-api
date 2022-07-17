@@ -1,20 +1,20 @@
 /**
  * @file Auth service
- * @module modules/auth/servcie
+ * @module modules/auth/service
  * @author Name6
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import type { TokenResult } from './auth.interface';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { decodeMD5 } from '@/common/transformers/codec.transformer';
 import { nanoid } from 'nanoid';
 import * as svgCaptcha from 'svg-captcha';
-import * as APP_CONFIG from '@/app.config';
-import { TokenResult } from './auth.interface';
-import { UserService } from '../user/user.service';
-import { CacheService } from '@/processors/cache/cache.service';
-import { ImageCaptchaPayload } from './auth.model';
 import { isEmpty } from 'lodash';
+import { decodeMD5 } from '@/common/transformers/codec.transformer';
+import * as APP_CONFIG from '@/app.config';
+import { CacheService } from '@/processors/cache/cache.service';
+import { UserService } from '../user/user.service';
+import { ImageCaptchaPayload } from './auth.model';
 
 @Injectable()
 export class AuthService {
@@ -43,15 +43,18 @@ export class AuthService {
     password: string,
   ): Promise<TokenResult & { user_id: number }> {
     const user = await this.userService.findOne({ username });
-    if (user === null) throw 'User is not exist';
-    if (user.status === false) throw '该用户已被禁用';
+    if (user === null)
+      throw new Error('User is not exist');
+    if (user.status === false)
+      throw new Error('该用户已被禁用');
     const existedPassword = user.password;
     const loginPassword = decodeMD5(password);
 
     if (loginPassword === existedPassword) {
       const token = this.createToken(user.id, user.username, user.role);
       return { ...token, user_id: user.id };
-    } else throw 'Password incorrect';
+    }
+    else { throw new Error('Password incorrect'); }
   }
 
   /**
@@ -78,9 +81,9 @@ export class AuthService {
 
   public async checkCaptcha(id: string, code: string): Promise<void> {
     const ret = await this.cacheService.get<string>(`admin:captcha:img:${id}`);
-    if (isEmpty(ret) || code.toLowerCase() !== ret.toLowerCase()) {
-      throw '验证码错误';
-    }
+    if (isEmpty(ret) || code.toLowerCase() !== ret.toLowerCase())
+      throw new Error('验证码错误');
+
     await this.cacheService.delete(`admin:captcha:img:${id}`);
   }
 }

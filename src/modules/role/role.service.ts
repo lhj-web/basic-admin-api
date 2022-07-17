@@ -1,7 +1,7 @@
-import { InjectModel } from '@/common/transformers/model.transformer';
-import { MongooseModel } from '@/interfaces/mongoose.interface';
-import { PaginateOptions } from '@/utils/paginate';
+import type { MongooseModel } from '@/interfaces/mongoose.interface';
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@/common/transformers/model.transformer';
+import { PaginateOptions } from '@/utils/paginate';
 import { MenuService } from '../menu/menu.service';
 import { Role, RoleInfo } from './role.model';
 
@@ -27,26 +27,30 @@ export class RoleService {
    */
   async findRoleById(id: number): Promise<Role> {
     const role = await this.roleModel.findOne({ id }).exec();
-    if (!role) throw '该角色不存在!';
+    if (!role)
+      throw new Error('该角色不存在!');
     return role;
   }
 
   async createOne(role: RoleInfo) {
     const info = await this.roleModel.findOne({ label: role.label });
-    if (info) throw 'The role has existed';
+    if (info)
+      throw new Error('The role has existed');
     this.roleModel.create(role);
   }
 
   async updateOne(role: RoleInfo) {
     const info = await this.roleModel.findOne({ label: role.label }).exec();
-    if (info && info.id !== Number(role.id)) throw 'The role has existed';
+    if (info && info.id !== Number(role.id))
+      throw new Error('The role has existed');
     this.roleModel
       .updateOne({ label: role.label }, { ...role, id: Number(role.id) })
       .exec();
   }
 
   deleteOne(id: number) {
-    if (!id) throw 'id不存在';
+    if (!id)
+      throw new Error('id不存在');
     this.roleModel.deleteOne({ id }).exec();
   }
 
@@ -68,7 +72,7 @@ export class RoleService {
   async getMenus(id: number) {
     const role = await this.findRoleById(id);
     const menus = await this.menuService.getMenuList(role.menus);
-    const newMenus = menus.map((menu) => {
+    const newMenus = menus.map(menu => {
       const { name, route, parent_id, component, icon, id, keepalive, order_num } = menu;
       return {
         id,
@@ -86,18 +90,19 @@ export class RoleService {
       };
     });
     const map = new Map();
-    newMenus.forEach((menu) => {
+    newMenus.forEach(menu => {
       map.set(menu.id, menu);
     });
     const routes: any[] = [];
     for (const menu of newMenus) {
       const parent = map.get(menu.parent_id);
-      if (parent) parent.children.push(menu);
+      if (parent)
+        parent.children.push(menu);
       else routes.push(menu);
     }
     for (const route of routes) {
       route.redirect = returnPath(route);
-      remomvePro(route);
+      removePro(route);
     }
 
     /**
@@ -106,10 +111,10 @@ export class RoleService {
      * @returns string
      */
     function returnPath(route) {
-      if (!route.children[0]) {
+      if (!route.children[0])
         return route.path;
-      }
-      return route.path + `/${returnPath(route.children[0])}`;
+
+      return `${route.path}/${returnPath(route.children[0])}`;
     }
 
     /**
@@ -117,17 +122,16 @@ export class RoleService {
      * @param route
      * @returns
      */
-    function remomvePro(route) {
+    function removePro(route) {
       if (route.children.length) {
-        for (const child of route.children) {
-          remomvePro(child);
-        }
-      } else {
+        for (const child of route.children)
+          removePro(child);
+      }
+      else {
         delete route.children;
       }
       delete route.id;
       delete route.parent_id;
-      return;
     }
     return routes;
   }

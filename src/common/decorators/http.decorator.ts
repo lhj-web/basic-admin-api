@@ -5,7 +5,7 @@
  */
 
 import lodash from 'lodash';
-import { SetMetadata, HttpStatus } from '@nestjs/common';
+import { HttpStatus, SetMetadata } from '@nestjs/common';
 import { ResponseMessage } from '@/interfaces/http.interface';
 import { UNDEFINED } from '@/constants/value.constant';
 import * as META from '@/constants/meta.constant';
@@ -34,21 +34,21 @@ type HandleOptionConfig = ResponseMessage | HandleOption;
 const buildHttpDecorator = (options: DecoratorBuilderOption): MethodDecorator => {
   const { errMessage, successMessage, errCode, successCode, usePaginate } = options;
   return (_, __, descriptor: PropertyDescriptor) => {
-    if (errCode) {
+    if (errCode)
       SetMetadata(META.HTTP_ERROR_CODE, errCode)(descriptor.value);
-    }
-    if (successCode) {
+
+    if (successCode)
       SetMetadata(META.HTTP_SUCCESS_CODE, successCode)(descriptor.value);
-    }
-    if (errMessage) {
+
+    if (errMessage)
       SetMetadata(META.HTTP_ERROR_MESSAGE, errMessage)(descriptor.value);
-    }
-    if (successMessage) {
+
+    if (successMessage)
       SetMetadata(META.HTTP_SUCCESS_MESSAGE, successMessage)(descriptor.value);
-    }
-    if (usePaginate) {
+
+    if (usePaginate)
       SetMetadata(META.HTTP_RES_TRANSFORM_PAGINATE, true)(descriptor.value);
-    }
+
     return descriptor;
   };
 };

@@ -15,9 +15,9 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { prop, modelOptions, plugin } from '@typegoose/typegoose';
-import { getProviderByTypegooseClass } from '@/common/transformers/model.transformer';
+import { modelOptions, plugin, prop } from '@typegoose/typegoose';
 import { AutoIncrementID } from '@typegoose/auto-increment';
+import { getProviderByTypegooseClass } from '@/common/transformers/model.transformer';
 import { generalAutoIncrementIDConfig } from '@/constants/increment.constant';
 import { mongoosePaginate } from '@/utils/paginate';
 
@@ -34,79 +34,79 @@ import { mongoosePaginate } from '@/utils/paginate';
 })
 export class Role {
   @prop({ unique: true })
-  id: number;
+    id: number;
 
   @IsDefined()
   @IsString()
   @prop({ required: true })
-  name: string;
+    name: string;
 
   @IsDefined()
   @IsNumber()
   @prop({ required: true })
-  user_id: number;
+    user_id: number;
 
   @IsDefined()
   @IsString()
   @prop({ unique: true })
-  label: string;
+    label: string;
 
   @IsDefined()
   @IsBoolean()
   @prop({ default: true })
-  status: boolean;
+    status: boolean;
 
   @IsDefined()
   @IsArray()
   @ArrayUnique()
   @prop({ type: () => [Number] })
-  menus: number[];
+    menus: number[];
 
   @IsOptional()
   @IsString({ message: 'desc' })
   @prop({ default: '' })
-  desc?: string;
+    desc?: string;
 
   @prop({ default: Date.now, immutable: true })
-  create_at?: Date;
+    create_at?: Date;
 
   @prop({ default: Date.now })
-  update_at?: Date;
+    update_at?: Date;
 }
 
 export class RoleInfo {
   @IsOptional()
   @IsInt()
-  id: number;
+    id: number;
 
   @IsDefined()
   @IsNotEmpty()
   @IsString()
-  name: string;
+    name: string;
 
   @IsDefined()
   @IsNotEmpty()
   @IsString()
-  label: string;
+    label: string;
 
   @IsDefined()
   @IsNotEmpty()
   @IsBoolean()
-  status: boolean;
+    status: boolean;
 
   @IsDefined()
   @IsNotEmpty()
   @IsArray()
   @ArrayUnique()
-  menus: number[];
+    menus: number[];
 
   @IsOptional()
   @IsString()
-  desc?: string;
+    desc?: string;
 
   @IsOptional()
   @IsInt()
-  user_id?: number;
+    user_id?: number;
 }
 
 export const RoleProvider = getProviderByTypegooseClass(Role);

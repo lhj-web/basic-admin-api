@@ -7,7 +7,7 @@
 import chalk from 'chalk';
 
 enum LoggerLevel {
-  Debug = 'dubug',
+  Debug = 'debug',
   Info = 'info',
   Warn = 'warn',
   Error = 'error',
@@ -19,26 +19,19 @@ const renderTime = () => {
 };
 
 const renderModule = (message: string) => {
-  if (typeof message === 'string' && message.startsWith('[') && message.endsWith(']')) {
+  if (typeof message === 'string' && message.startsWith('[') && message.endsWith(']'))
     return chalk.green.underline(message.substring(1, message.length - 1));
-  } else return message;
+
+  else return message;
 };
 
 const renderMessage = (color: chalk.Chalk, messages: any[]) => {
-  return messages.map((m) => (typeof m === 'string' ? color(m) : m));
+  return messages.map(m => (typeof m === 'string' ? color(m) : m));
 };
 
 const renderLog = (method: LoggerLevel, levelLabel: string, messageColor: chalk.Chalk) => {
   return (message: string, ...args: any) => {
-    // FIXME: 当method为‘debug’时报错console[method] is not a function
-    if (method === 'dubug')
-      return console.debug(
-        chalk.greenBright('[EDU] - '),
-        renderTime(),
-        levelLabel,
-        renderModule(message),
-        ...renderMessage(messageColor, args),
-      );
+    // eslint-disable-next-line no-console
     return console[method](
       chalk.greenBright('[EDU] - '),
       renderTime(),

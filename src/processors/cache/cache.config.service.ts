@@ -4,12 +4,14 @@
  * @author Name6
  */
 
+import type { CacheOptionsFactory } from '@nestjs/common';
+import type { CacheStoreOptions, RedisStoreOptions } from './cache.store';
+import { Injectable } from '@nestjs/common';
 import lodash from 'lodash';
-import { CacheOptionsFactory, Injectable } from '@nestjs/common';
 import { EmailService } from '@/processors/helper/email.service';
-import redisStore, { RedisStoreOptions, CacheStoreOptions } from './cache.store';
 import * as APP_CONFIG from '@/app.config';
 import logger from '@/utils/logger';
+import redisStore from './cache.store';
 
 @Injectable()
 export class CacheConfigService implements CacheOptionsFactory {
@@ -19,7 +21,7 @@ export class CacheConfigService implements CacheOptionsFactory {
   private sendAlarmMail = lodash.throttle((error: string) => {
     this.emailService.sendMailAs(APP_CONFIG.APP.NAME, {
       to: APP_CONFIG.APP.ADMIN_EMAIL,
-      subject: `Redis Error!`,
+      subject: 'Redis Error!',
       text: error,
       html: `<pre><code>${error}</code></pre>`,
     });
@@ -32,9 +34,8 @@ export class CacheConfigService implements CacheOptionsFactory {
     logger.error(...(errorMessage as [any]));
     this.sendAlarmMail(errorMessage.join(''));
 
-    if (retries > 6) {
+    if (retries > 6)
       return new Error('[Redis] 尝试次数已达极限！');
-    }
 
     return Math.min(retries * 1000, 3000);
   }
@@ -49,12 +50,12 @@ export class CacheConfigService implements CacheOptionsFactory {
         reconnectStrategy: this.retryStrategy.bind(this),
       },
     };
-    if (APP_CONFIG.REDIS.username) {
+    if (APP_CONFIG.REDIS.username)
       redisOptions.username = APP_CONFIG.REDIS.username;
-    }
-    if (APP_CONFIG.REDIS.password) {
+
+    if (APP_CONFIG.REDIS.password)
       redisOptions.password = APP_CONFIG.REDIS.password;
-    }
+
     return {
       isGlobal: true,
       store: redisStore,

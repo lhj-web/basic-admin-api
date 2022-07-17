@@ -10,22 +10,22 @@ export class AuthUserInfoPayload {
   @IsDefined()
   @IsNotEmpty()
   @IsString()
-  username: string;
+    username: string;
 
   @IsDefined()
   @IsNotEmpty()
   @IsString()
-  password: string;
+    password: string;
 
   @IsDefined()
   @IsNotEmpty()
   @IsString()
-  captchaId: string;
+    captchaId: string;
 
   @IsDefined()
   @IsNotEmpty()
   @IsString()
-  verifyCode: string;
+    verifyCode: string;
 }
 
 export class ImageCaptchaPayload {

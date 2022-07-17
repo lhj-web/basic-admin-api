@@ -18,9 +18,9 @@ export interface HttpResponseBase {
 export type ExceptionOption =
   | ResponseMessage
   | {
-      message: ResponseMessage;
-      error?: any;
-    };
+    message: ResponseMessage;
+    error?: any;
+  };
 
 // 翻页数据
 export interface HttpPaginateResult<T> {

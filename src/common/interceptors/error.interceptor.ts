@@ -8,11 +8,11 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
 import {
-  Injectable,
-  NestInterceptor,
   CallHandler,
   ExecutionContext,
   HttpStatus,
+  Injectable,
+  NestInterceptor,
 } from '@nestjs/common';
 import { ResponseMessage } from '@/interfaces/http.interface';
 import { CustomError } from '@/errors/custom.error';
@@ -33,7 +33,7 @@ export class ErrorInterceptor implements NestInterceptor {
     const statusCode = this.reflector.get<HttpStatus>(META.HTTP_ERROR_CODE, target);
     const message = this.reflector.get<ResponseMessage>(META.HTTP_ERROR_MESSAGE, target);
     return call$.pipe(
-      catchError((error) => {
+      catchError(error => {
         return throwError(
           () =>
             new CustomError(

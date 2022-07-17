@@ -4,7 +4,8 @@
  * @author Name6
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { AppController } from './app.controller';
 
 describe('AppController', () => {

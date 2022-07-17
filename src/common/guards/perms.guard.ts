@@ -17,12 +17,14 @@ export class PermsGuard implements CanActivate {
     private readonly reflector: Reflector,
     private readonly moduleRef: ModuleRef,
   ) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const notNeedPerm = this.reflector.get<boolean>(
       PERMISSION_OPTIONAL_KEY_METADATA,
       context.getHandler(),
     );
-    if (notNeedPerm === true) return true;
+    if (notNeedPerm === true)
+      return true;
     const req = context.switchToHttp().getRequest();
     const user = req.user as RequestUser;
     const { role } = user;
@@ -30,8 +32,10 @@ export class PermsGuard implements CanActivate {
 
     const roleService = this.moduleRef.get(RoleService, { strict: false });
     const perms = await roleService.getMenuPerms(role);
-    if (!perms.length) throw new HttpForbiddenError();
-    if (perms.includes(path.replace(/\//g, ':'))) return true;
+    if (!perms.length)
+      throw new HttpForbiddenError();
+    if (perms.includes(path.replace(/\//g, ':')))
+      return true;
     else throw new HttpForbiddenError();
   }
 }

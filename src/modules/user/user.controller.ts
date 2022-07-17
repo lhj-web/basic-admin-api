@@ -1,11 +1,11 @@
 import { Body, Controller, Get, HttpStatus, Patch, Post, Put, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
-import { UserService } from './user.service';
-import { User } from './user.model';
 import { PermissionOptional } from '@/common/decorators/permission-optional.decorator';
 import { QueryParams } from '@/common/decorators/query-params.decorator';
 import { HttpForbiddenError } from '@/errors/forbidden.error';
+import { User } from './user.model';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
@@ -29,7 +29,8 @@ export class UserController {
   })
   async add(@Body() body: User) {
     const user = await this.userService.findOne({ username: body.username });
-    if (user) throw 'The user has existed';
+    if (user)
+      throw new Error('The user has existed');
     await this.userService.createOne(body);
     return true;
   }
@@ -37,7 +38,8 @@ export class UserController {
   @Put('update')
   @HttpProcessor.handle({ message: 'Update user', error: HttpStatus.BAD_REQUEST })
   async update(@Body() body: User) {
-    if (body.id === 1) throw new HttpForbiddenError('不能修改管理员信息');
+    if (body.id === 1)
+      throw new HttpForbiddenError('不能修改管理员信息');
     await this.userService.updateOne(body.id, { ...body });
     return true;
   }
@@ -47,9 +49,11 @@ export class UserController {
   @HttpProcessor.handle('Get user list')
   async getUserList(@QueryParams() { origin, options }) {
     const { username, status } = origin;
-    const query = {};
-    if (username) query['username'] = username;
-    if (status) query['status'] = !!Number(status);
+    const query: { [key: string]: any } = {};
+    if (username)
+      query.username = username;
+    if (status)
+      query.status = !!Number(status);
     const users = await this.userService.getUserList(query, options);
     return users;
   }
@@ -61,11 +65,12 @@ export class UserController {
     error: HttpStatus.BAD_REQUEST,
   })
   async forbidUser(@Body() { id }) {
-    if (id === 1) throw new HttpForbiddenError('不能禁用系统管理员');
+    if (id === 1)
+      throw new HttpForbiddenError('不能禁用系统管理员');
     const user = await this.userService.findOne({ id });
-    if (user.status === true) {
+    if (user.status === true)
       this.userService.updateOne(id, { status: false });
-    } else throw 'The user has been disabled';
+    else throw new Error('The user has been disabled');
   }
 
   @Patch('enable')
@@ -77,9 +82,9 @@ export class UserController {
   async enableUser(@Body() { id }) {
     const user = await this.userService.findOne({ id });
 
-    if (user.status === false) {
+    if (user.status === false)
       this.userService.updateOne(id, { status: true });
-    } else throw 'The user has been enable';
+    else throw new Error('The user has been enable');
   }
 
   @Post('exist')

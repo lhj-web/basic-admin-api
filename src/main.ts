@@ -7,8 +7,8 @@
 import passport from 'passport';
 import bodyParser from 'body-parser';
 import compression from 'compression';
-import { AppModule } from '@/app.module';
 import { NestFactory, Reflector } from '@nestjs/core';
+import { AppModule } from '@/app.module';
 import { ValidationPipe } from '@/common/pipes/validation.pipe';
 import { HttpExceptionFilter } from '@/common/filters/error.filter';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';

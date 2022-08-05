@@ -33,7 +33,7 @@ const renderLog = (method: LoggerLevel, levelLabel: string, messageColor: chalk.
   return (message: string, ...args: any) => {
     // eslint-disable-next-line no-console
     return console[method](
-      chalk.greenBright('[EDU] - '),
+      chalk.greenBright('[BASIC] - '),
       renderTime(),
       levelLabel,
       renderModule(message),

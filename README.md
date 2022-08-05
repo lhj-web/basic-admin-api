@@ -3,15 +3,15 @@
   <img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
   <br>
   <br>
-  <a href="https://github.com/lhj-web/edu-cms-api/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/lhj-web/edu-cms-api"></a>
+  <a href="https://github.com/lhj-web/basic-admin-api/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/lhj-web/basic-admin-api"></a>
   <a href="https://nestjs.com/"><img alt="GitHub license" src="https://img.shields.io/badge/nest-8.2.6-red"></a>
   <a href="https://typegoose.github.io/typegoose/"><img alt="GitHub license" src="https://img.shields.io/badge/typegoose-9.5.0-blue"></a>
-  <h1>Edu Cms Api</h1>
+  <h1>Basic Admin Api</h1>
 </div>
 
 ## 介绍
 
-[edu-cms](https://github.com/lhj-web/edu-cms)的后台，基于 Nestjs，数据库使用 MongoDB。权限与菜单绑定在一起。
+[Basic-Admin](https://github.com/lhj-web/basic-admin)的后台，基于 Nestjs，数据库使用 MongoDB。权限与菜单绑定在一起。
 
 ## 进度
 
@@ -61,13 +61,13 @@
 - 获取项目代码
 
 ```bash
-git clone https://github.com/lhj-web/edu-cms-api.git
+git clone https://github.com/lhj-web/basic-admin-api.git
 ```
 
 - 安装依赖
 
 ```bash
-cd edu-cms-api
+cd basic-admin-api
 
 pnpm i
 ```
